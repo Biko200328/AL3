@@ -50,14 +50,16 @@ class GameScene {
 
 	uint32_t mario = 0;
 
-	/// <summary>
-	/// ゲームシーン用
-	/// </summary>
-	
 	//モデル
 	Model* model_ = nullptr;
 
-	WorldTransform worldTransform_;
+	WorldTransform worldTransform_[100];
 
 	ViewProjection viewProjection_;
+
+	float viewAngle = 0.0f;
+
+	/// <summary>
+	/// ゲームシーン用
+	/// </summary>
 };
