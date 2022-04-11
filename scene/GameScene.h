@@ -48,6 +48,10 @@ class GameScene {
 	Audio* audio_ = nullptr;
 	DebugText* debugText_ = nullptr;
 
+	uint32_t mario = 0;
+	//モデル
+	Model* model_ = nullptr;
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
