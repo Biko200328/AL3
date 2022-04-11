@@ -49,10 +49,15 @@ class GameScene {
 	DebugText* debugText_ = nullptr;
 
 	uint32_t mario = 0;
-	//モデル
-	Model* model_ = nullptr;
 
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
+	
+	//モデル
+	Model* model_ = nullptr;
+
+	WorldTransform worldTransform_;
+
+	ViewProjection viewProjection_;
 };
