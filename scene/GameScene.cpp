@@ -34,7 +34,10 @@ void GameScene::Initialize() {
 		worldTransform_[i].Initialize();
 	}
 
-	viewProjection_.up = {cosf(XM_PI / 4.0f), sinf(XM_PI / 4.0f), 0.0f};
+	/*viewProjection_.fovAngleY = XMConvertToRadians(10.0f);*/
+	viewProjection_.aspectRatio = 1.0f;
+	viewProjection_.nearZ = 52.0f;
+	viewProjection_.farZ = 53.0f;
 	viewProjection_.Initialize();
 }
 
@@ -48,48 +51,67 @@ void GameScene::Update() {
 
 	const float kUpRotSpeed = 0.05f;
 
+	//if (input_->PushKey(DIK_W)) {
+	//	move = {0, 0, kEyeSpeed};
+	//} else if (input_->PushKey(DIK_S)) {
+	//	move = {0, 0, -kEyeSpeed};
+	//}
+
+	//viewProjection_.eye.x += move.x;
+	//viewProjection_.eye.y += move.y;
+	//viewProjection_.eye.z += move.z;
+
+	//debugText_->SetPos(50, 50);
+	//debugText_->Printf(
+	//  "eye:(%f,%f,%f)", viewProjection_.eye.x, viewProjection_.eye.y, viewProjection_.eye.z);
+
+	//if (input_->PushKey(DIK_LEFT)) {
+	//	move = {-kTargetSpeed, 0, 0};
+	//} else if (input_->PushKey(DIK_RIGHT)) {
+	//	move = {kTargetSpeed, 0, 0};
+	//}
+
+	//viewProjection_.target.x += move.x;
+	//viewProjection_.target.y += move.y;
+	//viewProjection_.target.z += move.z;
+
+	//debugText_->SetPos(50, 70);
+	//debugText_->Printf(
+	//  "Target:(%f,%f,%f)", viewProjection_.target.x, viewProjection_.target.y,
+	//  viewProjection_.target.z);
+
+	//if (input_->PushKey(DIK_SPACE)) {
+	//	viewAngle += kUpRotSpeed;
+	//	// 2πを超えたら0に戻す
+	//	viewAngle = fmodf(viewAngle, XM_2PI);
+	//}
+
+	//viewProjection_.up = {cosf(viewAngle), sinf(viewAngle), 0.0f};
+
+	//debugText_->SetPos(50, 90);
+	//debugText_->Printf(
+	//  "Target:(%f,%f,%f)", viewProjection_.up.x, viewProjection_.up.y, viewProjection_.up.z);
+
 	if (input_->PushKey(DIK_W)) {
-		move = {0, 0, kEyeSpeed};
+		viewProjection_.fovAngleY += 0.01f;
+		viewProjection_.fovAngleY = min(viewProjection_.fovAngleY, XM_PI);
 	} else if (input_->PushKey(DIK_S)) {
-		move = {0, 0, -kEyeSpeed};
+		viewProjection_.fovAngleY -= 0.01f;
+		viewProjection_.fovAngleY = max(viewProjection_.fovAngleY, 0.01f);
 	}
 
-	viewProjection_.eye.x += move.x;
-	viewProjection_.eye.y += move.y;
-	viewProjection_.eye.z += move.z;
-
-	debugText_->SetPos(50, 50);
-	debugText_->Printf(
-	  "eye:(%f,%f,%f)", viewProjection_.eye.x, viewProjection_.eye.y, viewProjection_.eye.z);
-
-	if (input_->PushKey(DIK_LEFT)) {
-		move = {-kTargetSpeed, 0, 0};
-	} else if (input_->PushKey(DIK_RIGHT)) {
-		move = {kTargetSpeed, 0, 0};
+	if (input_->PushKey(DIK_UP)) {
+		viewProjection_.nearZ += 0.1f;
+	} else if (input_->PushKey(DIK_DOWN)) {
+		viewProjection_.nearZ -= 0.1f;
 	}
-
-	viewProjection_.target.x += move.x;
-	viewProjection_.target.y += move.y;
-	viewProjection_.target.z += move.z;
-
-	debugText_->SetPos(50, 70);
-	debugText_->Printf(
-	  "Target:(%f,%f,%f)", viewProjection_.target.x, viewProjection_.target.y,
-	  viewProjection_.target.z);
-
-	if (input_->PushKey(DIK_SPACE)) {
-		viewAngle += kUpRotSpeed;
-		// 2πを超えたら0に戻す
-		viewAngle = fmodf(viewAngle, XM_2PI);
-	}
-
-	viewProjection_.up = {cosf(viewAngle), sinf(viewAngle), 0.0f};
-
-	debugText_->SetPos(50, 90);
-	debugText_->Printf(
-	  "Target:(%f,%f,%f)", viewProjection_.up.x, viewProjection_.up.y, viewProjection_.up.z);
 
 	viewProjection_.UpdateMatrix();
+
+	debugText_->SetPos(50, 100);
+	debugText_->Printf("fovAngleY(Degree):%f", XMConvertToDegrees(viewProjection_.fovAngleY));
+	debugText_->SetPos(50, 130);
+	debugText_->Printf("nearZ:%f", viewProjection_.nearZ);
 }
 
 void GameScene::Draw() {
