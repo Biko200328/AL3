@@ -17,10 +17,13 @@ void GameScene::Initialize() {
 	mario = TextureManager::Load("mario.jpg");
 	// 3Dモデルの生成
 	model_ = Model::Create();
-	worldTransform_.scale_ = {5.0f, 5.0f, 5.0f};
-	worldTransform_.rotation_ = {XMConvertToRadians(45.0f), XMConvertToRadians(45.0f), 0.0f};
-	worldTransform_.translation_ = {10.0f, 10.0f, 10.0f};
-	worldTransform_.Initialize();
+	for (int i = 0; i < 18; i++) {
+		worldTransform_[i].scale_ = {5.0f, 5.0f, 5.0f};
+		if (i < 9)worldTransform_[i].translation_ = {- 36.0f + (i * 10), 20.0f, 0};
+		else if (i >= 9 && i < 18)worldTransform_[i].translation_ = {-36.0f + ((i - 9) * 10), -20.0f, 0};
+		worldTransform_[i].Initialize();
+	}
+	
 	viewProjection_.Initialize();
 }
 
@@ -53,7 +56,14 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 	
-	model_->Draw(worldTransform_, viewProjection_, mario);
+	for (int i = 0; i < 18; i++) {
+		model_->Draw(worldTransform_[i], viewProjection_, mario);
+	}
+
+	/*debugText_->SetPos(50, 150);
+	debugText_->Printf(
+	  "%f,%f,%f", worldTransform_[11].translation_.x, worldTransform_[11].translation_.y,
+	  worldTransform_[11].translation_.z);*/
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
