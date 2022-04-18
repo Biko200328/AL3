@@ -59,6 +59,8 @@ class GameScene {
 
 	WorldTransform worldTransform_;
 
-	ViewProjection viewProjection_[3];
-	int x;
+	ViewProjection viewProjection_;
+
+	float viewAngle = 0.0f;
+	
 };
