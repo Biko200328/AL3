@@ -21,7 +21,7 @@ void GameScene::Initialize() {
 		for (int j = 0; j < 9; j++) {
 			for (int k = 0; k < 9; k++) {
 				worldTransform_[i][j][k].scale_ = {1.0f, 1.0f, 1.0f};
-				worldTransform_[i][j][k].translation_ = {-30.0f + i * 4, -17.5f + i * 4, 0.0f + i * 4};
+				worldTransform_[i][j][k].translation_ = {-15.0f + i * 4, -17.5f + j * 4, 0.0f + k * 4};
 				worldTransform_[i][j][k].Initialize();
 			}
 		}
