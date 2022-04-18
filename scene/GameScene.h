@@ -59,5 +59,6 @@ class GameScene {
 
 	WorldTransform worldTransform_;
 
-	ViewProjection viewProjection_;
+	ViewProjection viewProjection_[3];
+	int x;
 };

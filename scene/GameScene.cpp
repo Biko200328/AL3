@@ -1,6 +1,7 @@
 ﻿#include "GameScene.h"
 #include "TextureManager.h"
 #include <cassert>
+#include <random>
 
 using namespace DirectX;
 
@@ -17,11 +18,25 @@ void GameScene::Initialize() {
 	mario = TextureManager::Load("mario.jpg");
 	// 3Dモデルの生成
 	model_ = Model::Create();
+
 	worldTransform_.scale_ = {5.0f, 5.0f, 5.0f};
 	worldTransform_.rotation_ = {XMConvertToRadians(45.0f), XMConvertToRadians(45.0f), 0.0f};
-	worldTransform_.translation_ = {10.0f, 10.0f, 10.0f};
+	worldTransform_.translation_ = {0.0f, 0.0f, 0.0f};
 	worldTransform_.Initialize();
-	viewProjection_.Initialize();
+
+	// 乱数シード生成器
+	std::random_device seed_gen;
+	//メルセンヌ・ツイスター
+	std::mt19937_64 engine(seed_gen());
+	//乱数範囲(座標用)
+	std::uniform_real_distribution<float> eyeDist(-100.0f, 100.0f);
+
+	x = 0;
+
+	for (size_t i = 0; i < _countof(viewProjection_); i++) {
+		viewProjection_[i].eye = {eyeDist(engine), eyeDist(engine), eyeDist(engine)};
+		viewProjection_[i].Initialize();
+	}
 }
 
 void GameScene::Update() { }
@@ -52,8 +67,12 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-	
-	model_->Draw(worldTransform_, viewProjection_, mario);
+	if (input_->TriggerKey(DIK_SPACE)) {
+		x++;
+		if (x >= 3)
+			x = 0;
+	}
+		model_->Draw(worldTransform_, viewProjection_[x], mario);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
