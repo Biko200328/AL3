@@ -19,23 +19,34 @@ void GameScene::Initialize() {
 	// 3Dモデルの生成
 	model_ = Model::Create();
 
-	worldTransform_.Initialize();
+	worldTransform_[0].translation_ = {0.0f, 5.0f, 0.0f};
+	worldTransform_[1].translation_ = {-5.0f, 0.0f, 0.0f};
+	worldTransform_[2].translation_ = {5.0f, 0.0f, 0.0f};
 
-	viewProjection_.eye = {0, 0, 10};
+	for (int i = 0; i < 3; i++) {
+		worldTransform_[i].Initialize();
+	}
+
+	viewProjection_.target = {0.0, 0.0, 0.0};
 	viewProjection_.Initialize();
 }
 
-void GameScene::Update() { 
+void GameScene::Update() {
+	if (input_->TriggerKey(DIK_SPACE)) {
+		x++;
+		if (x >= 3)
+			x = 0;
+	}
 
-	const float speed = 0.02f;
-
-	viewAngle += speed;
-	viewAngle = fmodf(viewAngle, XM_2PI);
-
-	viewProjection_.eye = {sinf(viewAngle) * 10, 0, cosf(viewAngle) * 10};
+	if (x == 0)viewProjection_.target = {0.0, 5.0, 0.0};
+	else if (x == 1)viewProjection_.target = {-5.0, 0.0, 0.0};
+	else if (x == 2)viewProjection_.target = {5.0, 0.0, 0.0};
 
 	viewProjection_.UpdateMatrix();
+
+	debugText_->Printf("%d", x);
 }
+
 
 void GameScene::Draw() {
 
@@ -63,8 +74,9 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-		
-	model_->Draw(worldTransform_, viewProjection_, mario);
+	for (int i = 0; i < 3; i++) {
+		model_->Draw(worldTransform_[i], viewProjection_, mario);
+	}
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
