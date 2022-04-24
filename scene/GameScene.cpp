@@ -57,16 +57,34 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 
 	XMFLOAT3 move = {0, 0, 0};
+	XMFLOAT3 vec2 = {0, 0, 0};
 
-	const float kChestRotSpeed = 0.05f;
+	const float RotSpeed = 0.05f;
 
 	if (input_->PushKey(DIK_LEFT)) {
-		move = {0, -kChestRotSpeed, 0};
+		move = {0, -RotSpeed, 0};
+		vec2 = {
+		  worldTransform_[PartId::Root].rotation_.y * RotSpeed, 0,
+		  worldTransform_[PartId::Root].rotation_.y * RotSpeed};
 	} else if (input_->PushKey(DIK_RIGHT)) {
-		move = {0, kChestRotSpeed, 0};
+		move = {0, RotSpeed, 0};
 	}
 
 	worldTransform_[PartId::Root].rotation_.y += move.y;
+
+	viewProjection_.target = worldTransform_[PartId::Root].translation_;
+
+	float lengeX = sqrt(
+	  (viewProjection_.eye.x - viewProjection_.target.x) *
+	  (viewProjection_.eye.x - viewProjection_.target.x));
+
+	float lengeY = sqrt(
+	  (viewProjection_.eye.y - viewProjection_.target.y) *
+	  (viewProjection_.eye.y - viewProjection_.target.y));
+
+	float lengeZ = sqrt(
+	  (viewProjection_.eye.z - viewProjection_.target.z) *
+	  (viewProjection_.eye.z - viewProjection_.target.z));
 
 	XMFLOAT3 vec = {0, 0, 0};
 	const float kCharacterSpeed = 0.1f;
@@ -84,18 +102,8 @@ void GameScene::Update() {
 	worldTransform_[PartId::Root].translation_.x += vec.x;
 	worldTransform_[PartId::Root].translation_.z += vec.z;
 
-
-	viewProjection_.target = worldTransform_[PartId::Root].translation_;
 	viewProjection_.eye.x += vec.x;
 	viewProjection_.eye.z += vec.z;
-
-	
-
-	////長さ
-	//float vecLen = sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
-
-	////正規化
-	//vec = {vec.x / vecLen, vec.y / vecLen, vec.z / vecLen};
 
 	worldTransform_[PartId::Root].UpdateMatrix();
 	worldTransform_[PartId::Head].UpdateMatrix();
